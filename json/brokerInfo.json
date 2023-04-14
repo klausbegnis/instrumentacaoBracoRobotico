@@ -1,0 +1,8 @@
+{
+    "broker"    :   "broker.emqx.io",
+    "port"      :   1883,
+    "topic"    :   "coordinates/1",
+    "client"    :   "pc-",
+    "user"      :   "instrumentacao",
+    "pwd"       :   "instrumentacao"    
+}
