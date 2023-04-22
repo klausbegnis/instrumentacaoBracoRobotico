@@ -5,8 +5,15 @@ import time
 #Configuring don’t show warnings 
 gpio.setwarnings(False)
 
+# definitions
 x_pin = 27
 y_pin = 22
+
+xi = 50 # value readed
+yi = 25 # value readed
+
+x_max = 10 #cm
+y_max = 10 #cm
 
 #Configuring GPIO
 gpio.setmode(gpio.BCM)
@@ -14,32 +21,34 @@ gpio.setup(x_pin,gpio.OUT)
 gpio.setup(y_pin,gpio.OUT)
 
 #Configure the pwm objects and initialize its value
-pwmBlue = gpio.PWM(x_pin,100)
-pwmBlue.start(0)
+pwmX = gpio.PWM(x_pin,100)
+pwmX.start(0)
 
-pwmRed = gpio.PWM(y_pin,100)
-pwmRed.start(100)
+pwmY = gpio.PWM(y_pin,100)
+pwmY.start(100)
  
 #Create the dutycycle variables
-dcBlue = 0
-dcRed  = 100
+dcX = (xi/x_max)*100
+dcY  = (yi/y_max)*100
 
 #Loop infinite
 while True:
     try:
         #increment gradually the luminosity
-        pwmBlue.ChangeDutyCycle(dcBlue)
+        pwmX.ChangeDutyCycle(dcX)
+
         time.sleep(0.05)
-        dcBlue = dcBlue + 1
-        if dcBlue == 100:
-            dcBlue = 0
+        dcX = dcX + 1
+        if dcX == 100:
+            dcX = 0
 
         #decrement gradually the luminosity
-        pwmRed.ChangeDutyCycle(dcRed)
+        pwmY.ChangeDutyCycle(dcY)
         time.sleep(0.05)
-        dcRed = dcRed - 1
-        if dcRed == 0:
-            dcRed = 100
+        dcY = dcY - 1
+        if dcY == 0:
+            dcY = 100
+            
     except Exception as e:
         print(e)
         #End code
