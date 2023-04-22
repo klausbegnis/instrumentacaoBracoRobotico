@@ -21,7 +21,7 @@ pwmRed = gpio.PWM(y_pin,100)
 pwmRed.start(100)
  
 #Create the dutycycle variables
-dBlue = 0
+dcBlue = 0
 dcRed  = 100
 
 #Loop infinite
