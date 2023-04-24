@@ -42,7 +42,7 @@ def update_dc(xi,yi,pwnx,pwmy):
     y_min = 0
     if xi >= x_max:
         print(xi,x_max)
-        dcX = 99.9999999
+        dcX = 99.99
     elif xi <= x_min:
         print(xi,x_min)
         dcX = 0
@@ -50,7 +50,7 @@ def update_dc(xi,yi,pwnx,pwmy):
         dcX = (xi/x_max)*100
 
     if yi >= y_max:
-        dcY = 99.9999999
+        dcY = 99.99
     elif yi <= y_min:
         dcY = 0
     else:
