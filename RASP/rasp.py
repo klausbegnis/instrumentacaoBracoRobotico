@@ -37,8 +37,8 @@ def update_dc(xi,yi,pwnx,pwmy):
     dcX = (xi/x_max)*100
     dcY  = (yi/y_max)*100
 
-    pwnx.ChangeDutyCicle(dcX)
-    pwmy.ChangeDutyCicle(dcY)
+    pwnx.ChangeDutyCycle(dcX)
+    pwmy.ChangeDutyCycle(dcY)
 
 
 #Create the dutycycle variables
@@ -54,7 +54,7 @@ def connectMqtt(client_json):
     def on_connect(client, userdata, flags, rc):
         if client._client_id != None: ###to debug only the write
             if rc == 0:
-                print("MQTT connection sucesful")
+                print("MQTT connection successful")
             else:
                 print(f"MQTT connection failed: rc{rc}")
         else:
