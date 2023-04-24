@@ -65,7 +65,7 @@ def connectMqtt(client_json):
     client.connect(client_json["broker"], client_json["port"])
     return client
             
-def readCoordinates(client,client_json):
+def readCoordinates(client_json,client):
     def on_message(client, userdata, msg):
         global xi
         global yi
