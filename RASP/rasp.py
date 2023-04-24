@@ -25,18 +25,20 @@ gpio.setmode(gpio.BCM)
 gpio.setup(x_pin,gpio.OUT)
 gpio.setup(y_pin,gpio.OUT)
 
+pwmX = gpio.PWM(x_pin,frequency)
+pwmX.start(0)
+
+pwmY = gpio.PWM(y_pin,frequency)
+pwmY.start(0)
+
  
-def update_dc(xi,yi):
-    global dcX
-    global dcY
-    global pwmX
-    global pwmY
+def update_dc(xi,yi,pwnx,pwmy):
 
     dcX = (xi/x_max)*100
     dcY  = (yi/y_max)*100
 
-    pwmX.ChangeDutyCicle(dcX)
-    pwmX.ChangeDutyCicle(dcY)
+    pwnx.ChangeDutyCicle(dcX)
+    pwmy.ChangeDutyCicle(dcY)
 
 
 #Create the dutycycle variables
@@ -67,15 +69,15 @@ def connectMqtt(client_json):
     client.connect(client_json["broker"], client_json["port"])
     return client
             
-def readCoordinates(client_json,client):
+def readCoordinates(client_json,client,pwmx,pwmy):
     def on_message(client, userdata, msg):
         global xi
         global yi
         info = json.loads(msg.payload.decode())
         xi = info["x_coord"]
         yi = info["y_coord"]
-        update_dc(xi,yi)
-        print(dcX,dcY)
+        update_dc(xi,yi,pwmx,pwmy)
+        print(xi,yi)
 
     client.subscribe(client_json["topic"])
     client.on_message = on_message
@@ -86,16 +88,11 @@ def readCoordinates(client_json,client):
 config_path = r"./json/brokerInfo.json"
 mqtt_Config = readMQTTconfig(config_path)
 client = connectMqtt(mqtt_Config)
-readCoordinates(mqtt_Config,client)
+readCoordinates(mqtt_Config,client,pwmX,pwmY)
 
 
 
 #Configure the pwm objects and initialize its value
-pwmX = gpio.PWM(x_pin,frequency)
-pwmX.start(0)
-
-pwmY = gpio.PWM(y_pin,frequency)
-pwmY.start(0)
 
 update_dc(xi,yi)
 
