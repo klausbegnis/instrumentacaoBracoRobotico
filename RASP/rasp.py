@@ -41,17 +41,18 @@ def update_dc(xi,yi,pwnx,pwmy):
     x_min = 0
     y_min = 0
     if xi >= x_max:
-        xi = x_max
+        dcX = 100
+    elif xi <= x_min:
+        dcX = 0
+    else:
+        dcX = (xi/x_max)*100
+
     if yi >= y_max:
-        yi = y_max
-
-    if xi <= x_min:
-        xi = x_min
-    if yi <= y_min:
-        yi = y_min
-
-    dcX = (xi/x_max)*100
-    dcY  = (yi/y_max)*100
+        dcY = 100
+    elif yi <= y_min:
+        dcY = 0
+    else:
+        dcY  = (yi/y_max)*100
 
     pwnx.ChangeDutyCycle(dcX)
     pwmy.ChangeDutyCycle(dcY)
