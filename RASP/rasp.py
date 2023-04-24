@@ -84,7 +84,7 @@ def readCoordinates(client,client_json):
 config_path = r"./json/brokerInfo.json"
 mqtt_Config = readMQTTconfig(config_path)
 client = connectMqtt(mqtt_Config)
-readCoordinates(client)
+readCoordinates(mqtt_Config,client)
 
 #Configure the pwm objects and initialize its value
 pwmX = gpio.PWM(x_pin,frequency)
