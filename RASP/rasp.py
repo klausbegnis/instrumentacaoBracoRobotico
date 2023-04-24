@@ -34,6 +34,13 @@ pwmY.start(0)
  
 def update_dc(xi,yi,pwnx,pwmy):
 
+    global x_max
+    global y_max
+    if xi >= x_max:
+        xi = x_max
+    if yi >= y_max:
+        yi = y_max
+
     dcX = (xi/x_max)*100
     dcY  = (yi/y_max)*100
 
