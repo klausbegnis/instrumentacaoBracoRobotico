@@ -16,6 +16,8 @@ yi = 25 # value readed
 
 x_max = 100 #mm
 y_max = 100 #mm
+x_min = 0
+y_min = 0
 
 period = 0.1 #s
 frequency = 1/period # Hz
@@ -36,10 +38,17 @@ def update_dc(xi,yi,pwnx,pwmy):
 
     global x_max
     global y_max
+    global x_min
+    global y_min
     if xi >= x_max:
         xi = x_max
     if yi >= y_max:
         yi = y_max
+
+    if xi <= x_min:
+        xi = x_min
+    if yi <= y_min:
+        yi = y_min
 
     dcX = (xi/x_max)*100
     dcY  = (yi/y_max)*100
@@ -103,8 +112,6 @@ readCoordinates(mqtt_Config,client,pwmX,pwmY)
 
 update_dc(xi,yi)
 
-print(dcX)
-print(dcY)
 
 
 #Loop infinite
