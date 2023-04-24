@@ -29,16 +29,18 @@ gpio.setup(y_pin,gpio.OUT)
 def update_dc(xi,yi):
     global dcX
     global dcY
+    global pwmX
+    global pwmY
 
     dcX = (xi/x_max)*100
     dcY  = (yi/y_max)*100
 
+    pwmX.ChangeDutyCicle(dcX)
+    pwmX.ChangeDutyCicle(dcY)
+
 
 #Create the dutycycle variables
-update_dc(xi,yi)
 
-print(dcX)
-print(dcY)
 
 def readMQTTconfig(path):
     # opens json file and returns dictionaty
@@ -86,12 +88,20 @@ mqtt_Config = readMQTTconfig(config_path)
 client = connectMqtt(mqtt_Config)
 readCoordinates(mqtt_Config,client)
 
+
+
 #Configure the pwm objects and initialize its value
 pwmX = gpio.PWM(x_pin,frequency)
-pwmX.start(dcX)
+pwmX.start(0)
 
 pwmY = gpio.PWM(y_pin,frequency)
-pwmY.start(dcY)
+pwmY.start(0)
+
+update_dc(xi,yi)
+
+print(dcX)
+print(dcY)
+
 
 #Loop infinite
 while True:
