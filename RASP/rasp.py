@@ -36,10 +36,10 @@ pwmY.start(0)
  
 def update_dc(xi,yi,pwnx,pwmy):
 
-    global x_max
-    global y_max
-    global x_min
-    global y_min
+    x_max = 100
+    y_max = 100
+    x_min = 0
+    y_min = 0
     if xi >= x_max:
         xi = x_max
     if yi >= y_max:
