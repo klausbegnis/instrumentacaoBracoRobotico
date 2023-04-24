@@ -81,7 +81,7 @@ def readCoordinates(client,client_json):
 
 ## creates mqtt connection
 
-config_path = r"./json/brokerinfo.json"
+config_path = r"./json/brokerInfo.json"
 mqtt_Config = readMQTTconfig(config_path)
 client = connectMqtt(mqtt_Config)
 readCoordinates(client)
