@@ -117,7 +117,7 @@ while True:
         else:
             print("x",center_x_mm - values[-1][0])
             print("y",center_y_mm - values[-1][1])
-            if abs((center_x_mm - values[-1][0]) < 5) and (abs(center_y_mm-values[-1][0]) < 5):
+            if abs((center_x_mm - values[-1][0]) < 5) and (abs(center_y_mm-values[-1][0] < 5)):
                 values.append((center_x_mm,center_y_mm))
                 iteration_counter +=1
         print(iteration_counter)
