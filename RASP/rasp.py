@@ -14,9 +14,6 @@ class GPIOmanager():
         self.x_pin = 2
         self.y_pin = 4
 
-        self.xi = 50 # value readed
-        self.yi = 25 # value readed
-
         self.x_max = x_max #mm
         self.y_max = y_max #mm
         self.x_min = 0
@@ -45,7 +42,7 @@ class GPIOmanager():
  
     def update_dc(self,xi,yi):
 
-
+        print(xi,yi,xi/self.x_max)
         if xi >= self.x_max:
             dcX = 99.99 #maximum value allowed from the library
         elif xi <= self.x_min:
