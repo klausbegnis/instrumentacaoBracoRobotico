@@ -118,7 +118,7 @@ while True:
             if abs(center_x_mm - values[-1][0]) < 5 and abs(center_y_mm-values[-1][0]) < 5:
                 values.append((center_x_mm,center_y_mm))
                 iteration_counter +=1
-        
+        print(iteration_counter)
         if iteration_counter == 10:
             final_center_x_mm = values[-1][0]
             final_center_y_mm = values[-1][1]
