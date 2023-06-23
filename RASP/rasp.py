@@ -11,8 +11,8 @@ class GPIOmanager():
         gpio.setwarnings(False)
 
         # definitions
-        self.x_pin = 27
-        self.y_pin = 22
+        self.x_pin = 2
+        self.y_pin = 3
 
         self.xi = 50 # value readed
         self.yi = 25 # value readed
@@ -31,10 +31,10 @@ class GPIOmanager():
         gpio.setup(self.y_pin,gpio.OUT)
 
         self.pwmX = gpio.PWM(self.x_pin,self.frequency)
-        self.pwmX.start(50)
+        self.pwmX.start(0)
 
         self.pwmY = gpio.PWM(self.y_pin,self.frequency)
-        self.pwmY.start(50)
+        self.pwmY.start(0)
 
         ## creates mqtt connection
 
@@ -59,7 +59,7 @@ class GPIOmanager():
             dcY = 0
         else:
             dcY  = (yi/self.y_max)*100
-
+        print("DC",dcX,dcY)
         self.pwmX.ChangeDutyCycle(dcX)
         self.pwmX.ChangeDutyCycle(dcY)
 
