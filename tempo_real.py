@@ -126,9 +126,11 @@ while True:
             final_center_y_mm = values[-1][1]
             while True:
                 print(final_center_x_mm,final_center_x_mm)
+                ret, frame = cap.read()
                 if cv2.waitKey(1) & 0xFF == ord('s'):
                     cv2.imshow('Pressione "s" para iniciar', frame)
                     iteration_counter == 0
+                    values.clear()
                     break
 
         
