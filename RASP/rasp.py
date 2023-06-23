@@ -12,7 +12,7 @@ class GPIOmanager():
 
         # definitions
         self.x_pin = 2
-        self.y_pin = 3
+        self.y_pin = 4
 
         self.xi = 50 # value readed
         self.yi = 25 # value readed
