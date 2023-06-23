@@ -31,10 +31,10 @@ class GPIOmanager():
         gpio.setup(self.y_pin,gpio.OUT)
 
         self.pwmX = gpio.PWM(self.x_pin,self.frequency)
-        self.pwmX.start(0)
+        self.pwmX.start(50)
 
         self.pwmY = gpio.PWM(self.y_pin,self.frequency)
-        self.pwmY.start(0)
+        self.pwmY.start(50)
 
         ## creates mqtt connection
 
