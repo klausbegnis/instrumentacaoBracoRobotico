@@ -11,10 +11,17 @@ Original file is located at
 
 import cv2
 import numpy as np
+from RASP.rasp import GPIOmanager
 
+# Variáveis para armazenar as dimensões da área branca
+width_white = 350  # Largura da área branca em mm
+height_white = 254  # Altura da área branca em mm
+
+GPIO = GPIOmanager(350,254)
 
 iteration_counter = 0
 values = []
+
 
 # Captura o vídeo da câmera
 cap = cv2.VideoCapture(0)
@@ -60,10 +67,6 @@ while True:
 
     # Encontra os contornos da área vermelha dentro da área branca
     contours_red, _ = cv2.findContours(mask_red, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-    # Variáveis para armazenar as dimensões da área branca
-    width_white = 350  # Largura da área branca em mm
-    height_white = 254  # Altura da área branca em mm
 
     # Variáveis para armazenar as coordenadas do centro da maior área vermelha
     center_x = 0
@@ -124,8 +127,9 @@ while True:
         if iteration_counter == 10:
             final_center_x_mm = values[-1][0]
             final_center_y_mm = values[-1][1]
+            print(final_center_x_mm,final_center_x_mm)
+            GPIO.update_dc(final_center_x_mm,final_center_y_mm)
             while True:
-                print(final_center_x_mm,final_center_x_mm)
                 ret, frame = cap.read()
                 if cv2.waitKey(1) & 0xFF == ord('s'):
                     cv2.imshow('Pressione "s" para iniciar', frame)
