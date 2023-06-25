@@ -1,10 +1,10 @@
-#define LED 52
+//#define LED 52
 #define ECHO 51
 #define TRIG 50
-#define X_READ A2
-#define Y_READ A3
-#define X_MAX 350 //mm
-#define Y_MAX 254 //mm
+#define X_READ A0
+#define Y_READ A1
+#define X_MAX 100 //mm
+#define Y_MAX 100 //mm
 #define PERIOD_MAX 100 //ms
 #define PERIOD_MIN 0
 // step motor values
@@ -66,7 +66,7 @@ void setup() {
   Serial.begin(57600);
   pinMode(ECHO,INPUT);
   pinMode(TRIG,OUTPUT);
-  pinMode(LED,OUTPUT);
+  //pinMode(LED,OUTPUT);
   pinMode(X_READ,INPUT);
   pinMode(Y_READ,INPUT);
   pinMode(red,OUTPUT);
@@ -83,21 +83,18 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   distance = readDistance(); //mm
-  //if (distance < 30)
-  //{
-  // setLedAndWait(HIGH,10);
-  //};
-  //setLedAndWait(HIGH,1000);
-  Serial.print(distance);
-  Serial.print("Teste \n");
-
+  Serial.println(distance);
+  /*
   if (distance < 150){
-    setLedAndWait(0, HIGH,false);
+    //setLedAndWait(0, HIGH,false);
+    Serial.print("Distancia: ");
+    Serial.println(distance);
   }
+  
   else{
-    setLedAndWait(0, LOW,false);
-  }
-
+    //setLedAndWait(0, LOW,false);
+  }*/
+  
   x_pulse = pulseIn(X_READ,HIGH);
   y_pulse = pulseIn(Y_READ,HIGH);
 
@@ -106,20 +103,18 @@ void loop() {
   x_reading = ((x_pulse-0)*conversion_x)/1000; // trocar para *?
   y_reading = ((y_pulse-0)*conversion_y)/1000;
 
-  Serial.print("Distancia X: ");
+  Serial.print("Coordenada X: ");
   Serial.println(x_reading);
 
   
-  Serial.print("Distancia Y: ");
+  Serial.print("Coordenada Y: ");
   Serial.println(y_reading);
 
-  //setLedAndWait(100,HIGH);
-  //setLedAndWait(100,LOW);
   STEP_MOTOR.sendStepConfig();
 }
 
 void setLedAndWait(int ts, bool setter,bool wait){
-  digitalWrite(LED,setter);
+  //digitalWrite(LED,setter);
   if (wait){delay(ts);};
 }
 
