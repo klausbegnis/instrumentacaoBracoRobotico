@@ -58,7 +58,7 @@ class GPIOmanager():
             dcY  = (yi/self.y_max)*100
         print("DC",dcX,dcY)
         self.pwmX.ChangeDutyCycle(dcX)
-        self.pwmX.ChangeDutyCycle(dcY)
+        self.pwmY.ChangeDutyCycle(dcY)
 
     def setMAXvalues(self,x,y):
         self.x_max = x
