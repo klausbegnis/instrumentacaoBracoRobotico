@@ -14,11 +14,9 @@
 #define red 49
 
 // SERVO PINS
-#define servo1 9 // Pino de controle do servo 1
-#define servo2 10 // Pino de controle do servo 2
-#define servo3 11 // Pino de controle do servo 3
+#define servo2 A8 // Pino de controle do servo 2
+#define servo3 A9 // Pino de controle do servo 3
 
-Servo s1;
 Servo s2;
 Servo s3;
 
@@ -258,7 +256,7 @@ void go2objective(coordinate COORD)
   theta2 = 90 - gama - beta; // elbow angle
   theta3 = 180 - alpha; // wrist angle
 
-  s2.write(theta1);
+  s2.write(theta2);
   s3.write(theta3);
-  STEP_MOTOR.moveToPosition(theta3);
+  STEP_MOTOR.moveToPosition(theta1);
 }
