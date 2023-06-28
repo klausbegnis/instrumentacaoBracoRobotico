@@ -3,10 +3,6 @@
 #define TRIG 50
 #define X_READ A0
 #define Y_READ A1
-#define X_MAX 100 //mm
-#define Y_MAX 100 //mm
-#define PERIOD_MAX 100 //ms
-#define PERIOD_MIN 0
 // step motor values
 #define ora 46
 #define bro 47
@@ -20,12 +16,25 @@ int BO = 0b0010;
 int YR = 0b0100;
 int RY = 0b1000;
 
+float X_MAX = 190;
+float Y_MAX = 160;
+float PERIOD_MAX = 100;
+float PERIOD_MIN = 0;
+
+float y_offset = 150;
 
 double x_pulse;
 double y_pulse;
 double x_reading;
 double y_reading;
 double distance;
+double realCoordinates;
+
+struct coordinate
+{
+  double x;
+  double y;
+};
 
 struct stepMotor
 {
@@ -56,10 +65,8 @@ struct stepMotor
 
 };
 
-double conversion_x = (PERIOD_MAX - PERIOD_MIN)/(X_MAX);
-double conversion_y = (PERIOD_MAX - PERIOD_MIN)/(Y_MAX);
-
 stepMotor STEP_MOTOR;
+coordinate REAL_COORDINATE; 
 
 void setup() {
   // put your setup code here, to run once:
@@ -75,9 +82,6 @@ void setup() {
   pinMode(bro,OUTPUT);
 
   STEP_MOTOR.sendStepConfig();
-
-
-
 }
 
 void loop() {
@@ -100,8 +104,8 @@ void loop() {
 
   // max time to pulse DC=100 -> T=0.01 -> 10ms
   // (10ms-0) / 100 = 0.1
-  x_reading = ((x_pulse-0)*conversion_x)/1000; // trocar para *?
-  y_reading = ((y_pulse-0)*conversion_y)/1000;
+  x_reading = x_pulse*X_MAX/PERIOD_MAX/1000; // trocar para *?
+  y_reading = y_pulse*Y_MAX/PERIOD_MAX/1000;
 
   Serial.print("Coordenada X: ");
   Serial.println(x_reading);
@@ -109,6 +113,15 @@ void loop() {
   
   Serial.print("Coordenada Y: ");
   Serial.println(y_reading);
+
+  REAL_COORDINATE = convert2Reference(x_reading,y_reading);
+
+  Serial.print("Converted X: ");
+  Serial.print(REAL_COORDINATE.x);
+
+  Serial.print("Converterd Y: ");
+  Serial.print(REAL_COORDINATE.y);
+
 
   STEP_MOTOR.sendStepConfig();
 }
@@ -129,4 +142,25 @@ double readDistance()
   unsigned long duracao = pulseIn(ECHO, HIGH);
   
   return duracao;
+}
+
+coordinate convert2Reference(double x, double y)
+{
+  coordinate RESULT;
+  double x_converted;
+  double y_converted = y + y_offset; // add the distance from the base
+  // to the detection area
+  
+  //centers the step motor
+  if ((x > (X_MAX/2)) or (x < (X_MAX/2)))
+  {
+    x_converted = x - (X_MAX/2);
+  }
+  else
+  {
+    x_converted = 0;
+  } 
+  RESULT.x = x_converted;
+  RESULT.y = y_converted;
+  return RESULT;
 }
