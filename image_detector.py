@@ -85,6 +85,7 @@ class ImageDetector():
             # crop the largest rectangle from the original image
             x, y, w, h = cv2.boundingRect(max_rect)
             crop = image[y:y+h, x:x+w]
+            print(crop.shape)
 
         # show the output image
         if crop is not None:
