@@ -14,10 +14,10 @@ import numpy as np
 from RASP.rasp import GPIOmanager
 
 # Variáveis para armazenar as dimensões da área branca
-width_white = 350  # Largura da área branca em mm
-height_white = 254  # Altura da área branca em mm
+width_white = 160  # Largura da área branca em mm
+height_white = 190  # Altura da área branca em mm
 
-GPIO = GPIOmanager(350,254)
+GPIO = GPIOmanager(width_white,height_white)
 
 iteration_counter = 0
 values = []
