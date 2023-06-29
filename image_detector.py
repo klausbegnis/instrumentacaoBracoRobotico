@@ -116,7 +116,7 @@ class ImageDetector():
             x_red, y_red, w_red, h_red = cv2.boundingRect(countours)
             area = (w_red * h_red)
 
-            cv2.rectangle(frame, (x_red, y_red), (x_red + w_red, y_red + h_red), (0, 0, 255), 2)
+            #cv2.rectangle(frame, (x_red, y_red), (x_red + w_red, y_red + h_red), (0, 0, 255), 2)
 
             # Verifica se a área é a maior encontrada até agora
             if area > max_area:
@@ -129,7 +129,7 @@ class ImageDetector():
                 top_height_red = h_red
                 top_width_red = w_red
 
-        #cv2.rectangle(frame, (top_left_x, top_left_y), (top_left_x + top_width_red, top_left_y + top_height_red), (0, 0, 255), 2)
+        cv2.rectangle(frame, (top_left_x, top_left_y), (top_left_x + top_width_red, top_left_y + top_height_red), (0, 0, 255), 2)
 
         # Conversão das coordenadas do centro para centímetros
         center_x_mm = (center_x / frame.shape[1]) * self.width
