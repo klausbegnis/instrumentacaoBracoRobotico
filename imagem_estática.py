@@ -16,8 +16,8 @@ img = cv2.imread('teste.jpg')
 from RASP.rasp import GPIOmanager
 from image_detector import ImageDetector
 
-width = 160
-height = 196 
+width = 196
+height = 160 
 
 GPIO = GPIOmanager(width,height)
 DETECTOR = ImageDetector(width,height)

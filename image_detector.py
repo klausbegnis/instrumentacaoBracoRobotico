@@ -116,7 +116,7 @@ class ImageDetector():
 
             x_red, y_red, w_red, h_red = cv2.boundingRect(countours)
             area = (w_red * h_red)
-
+            print(x_red,y_red)
             #cv2.rectangle(frame, (x_red, y_red), (x_red + w_red, y_red + h_red), (0, 0, 255), 2)
 
             # Verifica se a área é a maior encontrada até agora
