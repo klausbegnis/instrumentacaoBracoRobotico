@@ -35,7 +35,7 @@ class ImageDetector():
         # return the name of the shape
         return shape
     
-    def startDetectiob(self,image):
+    def startDetection(self,image):
         # load the image and resize it to a smaller factor so that the shapes can be approximated better
         resized = imutils.resize(image, width=300)
         ratio = image.shape[0] / float(resized.shape[0])
