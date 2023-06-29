@@ -62,6 +62,7 @@ while True:
         final_center_y_mm = values[-1][1]
         print(final_center_x_mm,final_center_x_mm)
         GPIO.update_dc(final_center_x_mm,final_center_y_mm)
+        conversion_fails=0
         while True:
             ret, frame = cap.read()
             if cv2.waitKey(1) & 0xFF == ord('s'):
