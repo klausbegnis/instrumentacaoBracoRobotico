@@ -129,22 +129,24 @@ class ImageDetector():
                 top_left_y = y_red  # Coordenada Y do topo esquerdo relativa à área preta
                 top_height_red = h_red
                 top_width_red = w_red
+        try:
+            cv2.rectangle(crop, (top_left_x, top_left_y), (top_left_x + top_width_red, top_left_y + top_height_red), (0, 0, 255), 2)
 
-        cv2.rectangle(crop, (top_left_x, top_left_y), (top_left_x + top_width_red, top_left_y + top_height_red), (0, 0, 255), 2)
+            # Conversão das coordenadas do centro para centímetros
+            center_x_mm = (center_x / crop.shape[1]) * self.width
+            center_y_mm = (center_y / crop.shape[0]) * self.height
+            print(center_x,center_y_mm)
+            # Desenha um retângulo em volta da maior área vermelha em relação à área preta
+            if max_contour is not None:
+                x_red, y_red, w_red, h_red = cv2.boundingRect(max_contour)
+                cv2.rectangle(crop, (x_red, y_red), (x_red + w_red, y_red + h_red), (0, 0, 255), 2)
+                # Exibe as coordenadas do centro da maior área vermelha em centímetros
+                print("Coordenadas do centro da maior área vermelha:")
+                print(f"{center_x_mm}, {center_y_mm}")
 
-        # Conversão das coordenadas do centro para centímetros
-        center_x_mm = (center_x / crop.shape[1]) * self.width
-        center_y_mm = (center_y / crop.shape[0]) * self.height
-        print(center_x,center_y_mm)
-        # Desenha um retângulo em volta da maior área vermelha em relação à área preta
-        if max_contour is not None:
-            x_red, y_red, w_red, h_red = cv2.boundingRect(max_contour)
-            cv2.rectangle(crop, (x_red, y_red), (x_red + w_red, y_red + h_red), (0, 0, 255), 2)
-            # Exibe as coordenadas do centro da maior área vermelha em centímetros
-            print("Coordenadas do centro da maior área vermelha:")
-            print(f"{center_x_mm}, {center_y_mm}")
-
-            # Mostra a imagem original com a área preta e a maior área vermelha encontradas destacadas
-            
-        return center_x_mm, center_y_mm, crop
+                # Mostra a imagem original com a área preta e a maior área vermelha encontradas destacadas
+                
+            return center_x_mm, center_y_mm, crop
+        except:
+            return -1,-1,crop
 
