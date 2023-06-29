@@ -135,7 +135,7 @@ class ImageDetector():
         # Conversão das coordenadas do centro para centímetros
         center_x_mm = (center_x / frame.shape[1]) * self.width
         center_y_mm = (center_y / frame.shape[0]) * self.height
-
+        print(center_x,center_y_mm)
         # Desenha um retângulo em volta da maior área vermelha em relação à área preta
         if max_contour is not None:
             x_red, y_red, w_red, h_red = cv2.boundingRect(max_contour)
