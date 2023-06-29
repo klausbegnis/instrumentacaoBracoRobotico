@@ -12,16 +12,18 @@ Original file is located at
 import cv2
 import numpy as np
 from RASP.rasp import GPIOmanager
+from image_detector import ImageDetector
 
 # Variáveis para armazenar as dimensões da área branca
-width_white = 160  # Largura da área branca em mm
-height_white = 196  # Altura da área branca em mm
+width = 160  # Largura da área branca em mm
+height = 196  # Altura da área branca em mm
 
-GPIO = GPIOmanager(width_white,height_white)
+GPIO = GPIOmanager(width,height)
+DETECTOR = ImageDetector(width,height)
 
 iteration_counter = 0
 values = []
-
+conversion_fails = 0
 
 # Captura o vídeo da câmera
 cap = cv2.VideoCapture(0)
@@ -41,102 +43,39 @@ while True:
     if not ret:
         break
 
-    # Converte o frame de BGR para HSV
-    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+    center_x_mm, center_y_mm, frame = DETECTOR.retrieveCoordinates(frame)
 
-    # Define os valores mínimos e máximos da cor vermelha em HSV
-    lower_red = np.array([0, 100, 100])
-    upper_red = np.array([10, 255, 255])
-    lower_red2 = np.array([160,100,100])
-    upper_red2 = np.array([179,255,255])
-
-    # Cria uma máscara para a cor vermelha
-    mask_red1 = cv2.inRange(hsv, lower_red, upper_red)
-    mask_red2 = cv2.inRange(hsv, lower_red2, upper_red2)
-    mask_red = cv2.bitwise_or(mask_red1, mask_red2)
-
-    # Define os valores mínimos e máximos da cor branca em HSV
-    lower_white = np.array([0, 0, 200])
-    upper_white = np.array([179, 50, 255])
-
-    # Cria uma máscara para a cor branca
-    mask_white = cv2.inRange(hsv, lower_white, upper_white)
-
-    # Encontra os contornos da área branca
-    contours_white, _ = cv2.findContours(mask_white, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-    # Encontra os contornos da área vermelha dentro da área branca
-    contours_red, _ = cv2.findContours(mask_red, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-    # Variáveis para armazenar as coordenadas do centro da maior área vermelha
-    center_x = 0
-    center_y = 0
-
-    # Encontra a maior área vermelha em relação à área branca
-    max_area = -1
-    max_contour = None
-
-    for cnt_white in contours_white:
-        x_white, y_white, w_white, h_white = cv2.boundingRect(cnt_white)
-
-        for cnt_red in contours_red:
-            x_red, y_red, w_red, h_red = cv2.boundingRect(cnt_red)
-
-            # Calcula as dimensões da área vermelha em relação à área branca
-            x_relative = x_red - x_white  # Posição X relativa da área vermelha em relação à área branca
-            y_relative = y_red - y_white  # Posição Y relativa da área vermelha em relação à área branca
-            w_relative = w_red  # Largura da área vermelha em relação à área branca (mesma largura)
-            h_relative = h_red  # Altura da área vermelha em relação à área branca (mesma altura)
-
-            # Calcula a área da área vermelha em relação à área branca
-            area_ratio = (w_relative * h_relative) / (w_white * h_white)
-
-            # Verifica se a área é a maior encontrada até agora
-            if area_ratio > max_area:
-                max_area = area_ratio
-                max_contour = cnt_red
-                center_x = int(x_red + w_red / 2)
-                center_y = int(y_red + h_red / 2)
-
-    # Conversão das coordenadas do centro para centímetros
-    center_x_mm = (center_x / frame.shape[1]) * width_white
-    center_y_mm = (center_y / frame.shape[0]) * height_white
-
-    # Desenha um retângulo em volta da área branca
-    for cnt_white in contours_white:
-        x_white, y_white, w_white, h_white = cv2.boundingRect(cnt_white)
-        cv2.rectangle(frame, (x_white, y_white), (x_white + w_white, y_white + h_white), (255, 255, 255), 2)
-
-    # Desenha um retângulo em volta da maior área vermelha em relação à área branca
-    if max_contour is not None:
-        x_red, y_red, w_red, h_red = cv2.boundingRect(max_contour)
-        cv2.rectangle(frame, (x_red, y_red), (x_red + w_red, y_red + h_red), (0, 0, 255), 2)
-        # Exibe as coordenadas do centro da maior área vermelha em centímetros
-        print("Coordenadas do centro da maior área vermelha:")
-        print(f"{center_x_mm}, {center_y_mm}")
-        if not(values):
+    print("Coordenadas do centro da maior área vermelha:")
+    print(f"{center_x_mm}, {center_y_mm}")
+    if not(values):
+        values.append((center_x_mm,center_y_mm))
+        iteration_counter =+ 1
+    else:
+        print("x",center_x_mm - values[-1][0])
+        print("y",center_y_mm - values[-1][1])
+        if abs((center_x_mm - values[-1][0]) < 5) and (abs(center_y_mm-values[-1][0] < 5)):
             values.append((center_x_mm,center_y_mm))
-            iteration_counter =+ 1
-        else:
-            print("x",center_x_mm - values[-1][0])
-            print("y",center_y_mm - values[-1][1])
-            if abs((center_x_mm - values[-1][0]) < 5) and (abs(center_y_mm-values[-1][0] < 5)):
-                values.append((center_x_mm,center_y_mm))
-                iteration_counter +=1
-        print(iteration_counter)
-        if iteration_counter == 10:
-            final_center_x_mm = values[-1][0]
-            final_center_y_mm = values[-1][1]
-            print(final_center_x_mm,final_center_x_mm)
-            GPIO.update_dc(final_center_x_mm,final_center_y_mm)
-            while True:
-                ret, frame = cap.read()
-                if cv2.waitKey(1) & 0xFF == ord('s'):
-                    cv2.imshow('Pressione "s" para iniciar', frame)
-                    iteration_counter == 0
-                    values.clear()
-                    break
-
+            iteration_counter +=1
+    print(iteration_counter)
+    if iteration_counter == 10:
+        final_center_x_mm = values[-1][0]
+        final_center_y_mm = values[-1][1]
+        print(final_center_x_mm,final_center_x_mm)
+        GPIO.update_dc(final_center_x_mm,final_center_y_mm)
+        while True:
+            ret, frame = cap.read()
+            if cv2.waitKey(1) & 0xFF == ord('s'):
+                cv2.imshow('Pressione "s" para iniciar', frame)
+                iteration_counter == 0
+                values.clear()
+                break
+    
+    conversion_fails +=1
+    
+    if conversion_fails >= 11:
+        conversion_fails = 0
+        iteration_counter = 0
+        values.clear()
         
 
 
