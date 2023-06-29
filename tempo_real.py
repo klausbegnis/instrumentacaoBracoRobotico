@@ -15,7 +15,7 @@ from RASP.rasp import GPIOmanager
 
 # Variáveis para armazenar as dimensões da área branca
 width_white = 160  # Largura da área branca em mm
-height_white = 190  # Altura da área branca em mm
+height_white = 196  # Altura da área branca em mm
 
 GPIO = GPIOmanager(width_white,height_white)
 

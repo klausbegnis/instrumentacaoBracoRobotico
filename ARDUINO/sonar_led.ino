@@ -47,7 +47,7 @@ int RY = 0b1000;
 
 // CONVERSION VARIABLES
 
-float X_MAX = 190;
+float X_MAX = 196;
 float Y_MAX = 160;
 float PERIOD_MAX = 100;
 float PERIOD_MIN = 0;
