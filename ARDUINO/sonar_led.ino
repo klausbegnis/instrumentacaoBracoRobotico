@@ -186,8 +186,8 @@ void loop() {
     //setLedAndWait(0, LOW,false);
   }*/
   
-  x_pulse = pulseIn(X_READ,HIGH);
-  y_pulse = pulseIn(Y_READ,HIGH);
+  x_pulse = pulseIn(Y_READ,HIGH);
+  y_pulse = pulseIn(X_READ,HIGH);
   x_reading = x_pulse*X_MAX/PERIOD_MAX/1000;
   y_reading = y_pulse*Y_MAX/PERIOD_MAX/1000;
 
