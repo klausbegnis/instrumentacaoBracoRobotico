@@ -39,11 +39,11 @@ while True:
     width_black = 196  # Largura da área preta em mm
     height_black = 160  # Altura da área preta em mm
 
-    # Variáveis para armazenar as coordenadas do centro e do topo direito da área preta
+    # Variáveis para armazenar as coordenadas do centro e do topo esquerdo da área preta
     center_x = 0
     center_y = 0
-    top_right_x = 0
-    top_right_y = 0
+    top_left_x = 0
+    top_left_y = 0
 
     # Encontra a menor área preta em relação à área vermelha
     min_area = float('inf')
@@ -71,8 +71,8 @@ while True:
                     min_contour = cnt_red
                     center_x = int(x_black + w_black / 2)  # Coordenada X do centro relativa à área preta
                     center_y = int(y_black + h_black / 2)  # Coordenada Y do centro relativa à área preta
-                    top_right_x = x_black + w_black  # Coordenada X do topo direito relativa à área preta
-                    top_right_y = y_black  # Coordenada Y do topo direito relativa à área preta
+                    top_left_x = x_black  # Coordenada X do topo esquerdo relativa à área preta
+                    top_left_y = y_black  # Coordenada Y do topo esquerdo relativa à área preta
 
     # Conversão das coordenadas do centro para centímetros
     center_x_mm = (center_x / frame.shape[1]) * width_black
@@ -101,4 +101,3 @@ while True:
 # Libera a captura da câmera e fecha as janelas
 cap.release()
 cv2.destroyAllWindows()
-
