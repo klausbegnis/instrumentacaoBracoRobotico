@@ -44,7 +44,7 @@ while True:
         break
 
     center_x_mm, center_y_mm, frame = DETECTOR.retrieveCoordinates(frame)
-    cv2.imshow(frame,"detected")
+    cv2.imshow("detected",frame)
     print("Coordenadas do centro da maior área vermelha:")
     print(f"{center_x_mm}, {center_y_mm}")
     if not(values):

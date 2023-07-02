@@ -146,6 +146,7 @@ class ImageDetector():
 
                 # Mostra a imagem original com a área preta e a maior área vermelha encontradas destacadas
                 cv2.rectangle(crop, (x_red, y_red), (x_red + w_red, y_red + h_red), (0, 0, 255), 2)
+            #cv2.imwrite("temp.png",crop)
             return center_x_mm, center_y_mm, crop
         except:
             return -1,-1,crop
