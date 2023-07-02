@@ -12,27 +12,31 @@
 #define bro 47
 #define yel 48
 #define red 49
-
+// BUTTONS
+#define BR 42
+#define BL 43
+#define BSTP 21
+#define BST 45
 // SERVO PINS
 #define servo2 A8 // Pino de controle do servo 2
-#define servo3 A9 // Pino de controle do servo 3
+#define servo3 A7 // Pino de controle do servo 3
 
 Servo s2;
 Servo s3;
 
 // SERVO MOTOR'S VARIABLES
 
-float L1 = 120; //altura até o primeiro palito na barra roscada em cm (Partindo da base do motor de passo)
-float L2 = 120; //Comprimento do primeiro palito (distância da barra roscada até o primeiro servo)
-float L3 = 120; //Comprimento do segundo palito (distância do primeiro servo - grande - até o segundo servo - pequeno)
-float Le = 120; //Comprimento do último palito (distância do segundo servo - pequeno - até o sensor de distância)
+float L1 = 135; //altura até o primeiro palito na barra roscada em cm (Partindo da base do motor de passo)
+float L2 = 95; //Comprimento do primeiro palito (distância da barra roscada até o primeiro servo)
+float L3 = 105; //Comprimento do segundo palito (distância do primeiro servo - grande - até o segundo servo - pequeno)
+float Le = 135; //Comprimento do último palito (distância do segundo servo - pequeno - até o sensor de distância)
 
 float r;
 float h;
 float alpha;
 float beta;
 float gama;
-float z = 5; // mm objective height
+float z = 5;// mm objective height
 
 float theta1 = 0; //Referente ao StepMotor - motor de passo (valor inicial configurável)
 float theta2 = 0; //Referente ao Servo2 - motor servo grande (valor inicial configurável)
@@ -82,11 +86,16 @@ struct stepMotor
       {
         while (current_position < theta)
         {
-          Serial.println(current_position);
+          //Serial.println(current_position);
           walkOneStepRight();
           current_position += degreePerStep;
           if (not(current_position + degreePerStep >= theta))
           {
+             for (int i = 0; i < 4; i+=1)
+            {
+                digitalWrite(startPin+i,0);
+                //continue;
+            }
             if (currentStep == RY)
             {
                 currentStep = OB;
@@ -101,11 +110,16 @@ struct stepMotor
       {
         while (current_position > theta)
         {
-          Serial.println(current_position);
+          //Serial.println(current_position);
           walkOneStepLeft();
           current_position -= degreePerStep;
           if (not(current_position - degreePerStep <= theta))
           {
+            for (int i = 0; i < 4; i+=1)
+            {
+                digitalWrite(startPin+i,0);
+                //continue;
+            }
             if (currentStep == OB)
             {
                 currentStep = RY;
@@ -123,30 +137,50 @@ struct stepMotor
         for (int i = 0; i < 4; i+=1)
         {
             digitalWrite(startPin+i,(1 <= (currentStep & (1 << i))));
-            Serial.print((1 <= (currentStep & (1 << i))));
+            //Serial.print((1 <= (currentStep & (1 << i))));
         }
         delay(50);
-        Serial.println();
-        for (int i = 0; i < 4; i+=1)
-        {
-            digitalWrite(startPin+i,0);
-            //continue;
-        }
+        //Serial.println();
     }
     void walkOneStepLeft()
     {
         for (int i = 0; i < 4; i++)
         {
             digitalWrite(startPin+i,(1 <= (currentStep & (1 << i))));
-            Serial.print((1 <= (currentStep & (1 << i))));
+            //Serial.print((1 <= (currentStep & (1 << i))));
         }
         delay(50);
-        Serial.println();
-        for (int i = 0; i < 4; i+=1)
+        //Serial.println();
+    }
+
+     void setupOrigin()
+    {
+      int setup_theta =0;
+      
+      while (true)
+      {
+        Serial.print("Current pos: ");
+        Serial.println(current_position);
+        Serial.print("Setup theta: ");
+        Serial.println(setup_theta);
+        if(digitalRead(BR) > 0)
         {
-            digitalWrite(startPin+i,0);
-            //continue;
+          setup_theta ++;
         }
+        if(digitalRead(BL) > 0)
+        {
+          setup_theta --;
+        }
+        delay(100);
+        moveToPosition(setup_theta);
+
+        if (digitalRead(BST) > 0)
+        {
+          current_position = 0;
+          break;
+        }
+      }
+      
     }
 
 };
@@ -165,16 +199,22 @@ void setup() {
   pinMode(yel,OUTPUT);
   pinMode(ora,OUTPUT);
   pinMode(bro,OUTPUT);
+  pinMode(BR,INPUT);
+  pinMode(BL,INPUT);
+  pinMode(BST,INPUT);
+  pinMode(LED_BUILTIN,OUTPUT);
+  attachInterrupt(digitalPinToInterrupt(BSTP),stop,RISING);
   s2.attach(servo2); //ASSOCIAÇÃO DO PINO DIGITAL AO OBJETO DO TIPO SERVO
-  s2.write(theta2); //Também precisamos definir onde vai ser o 0 desses servos
+  s2.write(0); //Também precisamos definir onde vai ser o 0 desses servos
   s3.attach(servo3); //ASSOCIAÇÃO DO PINO DIGITAL AO OBJETO DO TIPO SERVO
-  s3.write(theta3); //Também precisamos definir onde vai ser o 0 desses servos
+  s3.write(0); //Também precisamos definir onde vai ser o 0 desses servos
+  STEP_MOTOR.setupOrigin();
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  //distance = readDistance(); //mm
-  //Serial.println(distance);
+  distance = readDistance(); //mm
+  Serial.println(distance);
   /*
   if (distance < 150){
     //setLedAndWait(0, HIGH,false);
@@ -191,10 +231,10 @@ void loop() {
   x_reading = x_pulse*X_MAX/PERIOD_MAX/1000;
   y_reading = y_pulse*Y_MAX/PERIOD_MAX/1000;
 
-  Serial.print("Coordenada X: ");
-  Serial.println(x_reading); 
-  Serial.print("Coordenada Y: ");
-  Serial.println(y_reading);
+  //Serial.print("Coordenada X: ");
+  //Serial.println(x_reading); 
+  //Serial.print("Coordenada Y: ");
+  //Serial.println(y_reading);
 
   REAL_COORDINATE = convert2Reference(x_reading,y_reading);
 
@@ -253,13 +293,26 @@ void go2objective(coordinate COORD)
   r = sqrt(pow(x,2) + pow((y-L2),2));
   h = sqrt(pow((L1-z),2) + pow(r,2));
   alpha = acos((pow(L3,2) + pow(Le,2) - pow(h,2))/(2*L3*Le))*180/PI;
-  gama = acos((pow(L3,2) + pow(h,2) - pow(L3,2))/(2*L3*h))*180/PI;
+  gama = acos((pow(L3,2) + pow(h,2) - pow(Le,2))/(2*L3*h))*180/PI;
   beta = atan2(r, L1-z)*180/PI;
 
   theta2 = 90 - gama - beta; // elbow angle
-  theta3 = 180 - alpha; // wrist angle
-
+  Serial.print("theta2: ");
+  Serial.println(theta2);
+  theta3 = alpha; // wrist angle
+  Serial.print("theta3: ");
+  Serial.println(theta3);
   s2.write(theta2);
   s3.write(theta3);
   STEP_MOTOR.moveToPosition(theta1);
+}
+
+void stop()
+{
+  digitalWrite(LED_BUILTIN,HIGH);
+  while(digitalRead(BST) != 0)
+  {
+    delay(250);
+  }
+  digitalWrite(LED_BUILTIN,LOW);
 }
