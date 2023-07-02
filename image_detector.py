@@ -139,13 +139,13 @@ class ImageDetector():
             # Desenha um retângulo em volta da maior área vermelha em relação à área preta
             if max_contour is not None:
                 x_red, y_red, w_red, h_red = cv2.boundingRect(max_contour)
-                cv2.rectangle(crop, (x_red, y_red), (x_red + w_red, y_red + h_red), (0, 0, 255), 2)
+                
                 # Exibe as coordenadas do centro da maior área vermelha em centímetros
                 print("Coordenadas do centro da maior área vermelha:")
                 print(f"{center_x_mm}, {center_y_mm}")
 
                 # Mostra a imagem original com a área preta e a maior área vermelha encontradas destacadas
-                
+            cv2.rectangle(crop, (x_red, y_red), (x_red + w_red, y_red + h_red), (0, 0, 255), 2)
             return center_x_mm, center_y_mm, crop
         except:
             return -1,-1,crop
