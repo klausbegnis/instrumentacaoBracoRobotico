@@ -57,7 +57,7 @@ while True:
             values.append((center_x_mm,center_y_mm))
             iteration_counter +=1
     print(iteration_counter)
-    if True#iteration_counter == 5:
+    if True:#iteration_counter == 5:
         final_center_x_mm = values[-1][0]
         final_center_y_mm = values[-1][1]
         print(final_center_x_mm,final_center_x_mm)
