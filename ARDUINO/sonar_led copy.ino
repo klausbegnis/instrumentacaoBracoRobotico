@@ -13,6 +13,17 @@
 #define yel 48
 #define red 49
 
+// BUTTONS
+#define BR 42
+#define BL 43
+#define BSTP 44
+#define BST 45
+
+// LEDS
+#define GREEN 39
+#define YELLOW 40
+#define RED 41
+
 // SERVO PINS
 #define servo2 A8 // Pino de controle do servo 2
 #define servo3 A9 // Pino de controle do servo 3
@@ -94,6 +105,11 @@ struct stepMotor
             else {
                 currentStep = currentStep*0b0010;
             }
+            for (int i = 0; i < 4; i+=1)
+            {
+              digitalWrite(startPin+i,0);
+              continue;
+            }
           }
         }
       }
@@ -101,7 +117,6 @@ struct stepMotor
       {
         while (current_position > theta)
         {
-          Serial.println(current_position);
           walkOneStepLeft();
           current_position -= degreePerStep;
           if (not(current_position - degreePerStep <= theta))
@@ -123,30 +138,42 @@ struct stepMotor
         for (int i = 0; i < 4; i+=1)
         {
             digitalWrite(startPin+i,(1 <= (currentStep & (1 << i))));
-            Serial.print((1 <= (currentStep & (1 << i))));
+            //Serial.print((1 <= (currentStep & (1 << i))));
         }
         delay(50);
-        Serial.println();
-        for (int i = 0; i < 4; i+=1)
-        {
-            digitalWrite(startPin+i,0);
-            //continue;
-        }
     }
     void walkOneStepLeft()
     {
         for (int i = 0; i < 4; i++)
         {
             digitalWrite(startPin+i,(1 <= (currentStep & (1 << i))));
-            Serial.print((1 <= (currentStep & (1 << i))));
         }
         delay(50);
-        Serial.println();
-        for (int i = 0; i < 4; i+=1)
+    }
+
+    void setupOrigin()
+    {
+      int setup_theta =0;
+      while (true)
+      {
+        if(digitalRead(BR) > 0)
         {
-            digitalWrite(startPin+i,0);
-            //continue;
+          setup_theta ++;
         }
+        if(digitalRead(BL) > 0)
+        {
+          setup_theta --;
+        }
+        delay(100);
+        moveToPosition(setup_theta);
+
+        if (digitalRead(BSTP) > 0)
+        {
+          current_position = 0;
+          break;
+        }
+      }
+      
     }
 
 };
@@ -185,7 +212,7 @@ void loop() {
   else{
     //setLedAndWait(0, LOW,false);
   }*/
-  
+  /*
   x_pulse = pulseIn(Y_READ,HIGH);
   y_pulse = pulseIn(X_READ,HIGH);
   x_reading = x_pulse*X_MAX/PERIOD_MAX/1000;
@@ -203,10 +230,10 @@ void loop() {
   Serial.print("Converterd Y: ");
   Serial.print(REAL_COORDINATE.y);
   
-  go2objective(REAL_COORDINATE);
-  //STEP_MOTOR.moveToPosition(50);
-  //delay(100);
-  //STEP_MOTOR.moveToPosition(-50);
+  //go2objective(REAL_COORDINATE);*/
+  STEP_MOTOR.moveToPosition(50);
+  delay(10);
+  STEP_MOTOR.moveToPosition(-50);
 }
 
 double readDistance()
