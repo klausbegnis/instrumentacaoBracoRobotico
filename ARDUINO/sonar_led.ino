@@ -8,10 +8,10 @@
 #define X_READ A0
 #define Y_READ A1
 // step motor values
-#define ora 46
-#define bro 47
-#define yel 48
-#define red 49
+#define ora 8
+#define bro 9
+#define yel 10
+#define red 11
 // BUTTONS
 #define BR 42
 #define BL 43
@@ -29,14 +29,14 @@ Servo s3;
 float L1 = 135; //altura até o primeiro palito na barra roscada em cm (Partindo da base do motor de passo)
 float L2 = 95; //Comprimento do primeiro palito (distância da barra roscada até o primeiro servo)
 float L3 = 105; //Comprimento do segundo palito (distância do primeiro servo - grande - até o segundo servo - pequeno)
-float Le = 135; //Comprimento do último palito (distância do segundo servo - pequeno - até o sensor de distância)
+float Le = 130; //Comprimento do último palito (distância do segundo servo - pequeno - até o sensor de distância)
 
 float r;
 float h;
 float alpha;
 float beta;
 float gama;
-float z = 5;// mm objective height
+float z = 10;// mm objective height
 
 float theta1 = 0; //Referente ao StepMotor - motor de passo (valor inicial configurável)
 float theta2 = 0; //Referente ao Servo2 - motor servo grande (valor inicial configurável)
@@ -78,7 +78,7 @@ struct stepMotor
     int startPin = ora;
     int currentStep = OB;
     int current_position=0;
-    float degreePerStep = 1;
+    float degreePerStep = 5;
 
     void moveToPosition(float theta)
     {
@@ -155,6 +155,7 @@ struct stepMotor
 
      void setupOrigin()
     {
+      /*
       int setup_theta =0;
       
       while (true)
@@ -163,24 +164,38 @@ struct stepMotor
         Serial.println(current_position);
         Serial.print("Setup theta: ");
         Serial.println(setup_theta);
+        
         if(digitalRead(BR) > 0)
         {
           setup_theta ++;
+          //walkOneStepLeft();
         }
         if(digitalRead(BL) > 0)
         {
           setup_theta --;
+          //walkOneStepRight();
         }
-        delay(100);
+        //delay(100);
         moveToPosition(setup_theta);
-
-        if (digitalRead(BST) > 0)
+        if (digitalRead(BST) == 1)
         {
           current_position = 0;
           break;
         }
-      }
-      
+      }*/
+        moveToPosition(50);
+        delay(50);
+        moveToPosition(-50);
+        delay(50);
+        moveToPosition(50);
+        delay(50);
+        moveToPosition(0);       
+        current_position = 0;
+        
+        while (digitalRead(BST) !=1)
+        {
+          delay(50);
+        }
     }
 
 };
@@ -205,7 +220,7 @@ void setup() {
   pinMode(LED_BUILTIN,OUTPUT);
   attachInterrupt(digitalPinToInterrupt(BSTP),stop,RISING);
   s2.attach(servo2); //ASSOCIAÇÃO DO PINO DIGITAL AO OBJETO DO TIPO SERVO
-  s2.write(0); //Também precisamos definir onde vai ser o 0 desses servos
+  s2.write(90); //Também precisamos definir onde vai ser o 0 desses servos
   s3.attach(servo3); //ASSOCIAÇÃO DO PINO DIGITAL AO OBJETO DO TIPO SERVO
   s3.write(0); //Também precisamos definir onde vai ser o 0 desses servos
   STEP_MOTOR.setupOrigin();
@@ -305,6 +320,14 @@ void go2objective(coordinate COORD)
   s2.write(theta2);
   s3.write(theta3);
   STEP_MOTOR.moveToPosition(theta1);
+  delay(5000);
+  s2.write(90);
+  s3.write(0);
+  STEP_MOTOR.moveToPosition(-theta1);
+  while (digitalRead(BST)!=1)
+  {
+    delay(500);
+  }
 }
 
 void stop()
